@@ -17,7 +17,7 @@ jobs:
         run: |
           PYTHON_VERSIONS=$(grep "Programming Language :: Python ::" setup.cfg | sed -E "s/^.*::\s(.*)$/\1/" | tr "\n" " " | xargs | sed -E -e 's/\s/","/g' -e 's/^/["/' -e 's/$/"]/')
           DB=$(if grep -q "invenio-db" setup.cfg; then echo '"db-services": ["postgresql14", "mysql8"], '; else echo ''; fi)
-          SEARCH=$(if grep -q "invenio-search" setup.cfg; then echo '"search-services": [opensearch1], '; else echo ''; fi)
+          SEARCH=$(if grep -q "invenio-search" setup.cfg; then echo '"search-services": ["opensearch1"], '; else echo ''; fi)
           matrix=$(
             echo "{ \"python-version\": $PYTHON_VERSIONS, $DB $SEARCH \"requirements-level\": [\"pypi\"] }"
           )
