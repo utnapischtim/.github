@@ -41,7 +41,7 @@ jobs:
           SEARCH=$(
             if grep -q "invenio-search" setup.cfg
             then
-              echo '"search-services": ["opensearch1"], '
+              echo '"search-services": ["opensearch2"], '
             else
               echo ''
             fi)
@@ -53,7 +53,7 @@ jobs:
   tests:
     needs: create-strategy
     runs-on: ubuntu-latest
-    name: Test (Python ${{matrix.python-version}}
+    name: Test (Python ${{matrix.python-version}})
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.create-strategy.outputs.matrix) }}
