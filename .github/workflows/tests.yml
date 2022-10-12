@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: requirements
         id: requirements
@@ -48,8 +48,11 @@ jobs:
           matrix=$(
             echo "{ \"requirements-level\": [\"pypi\"], \"include\": $INCLUDE, $DB $SEARCH \"python-version\": $PYTHON_VERSIONS }"
           )
+          echo "-------------------"
           echo $matrix
-          echo "::set-output name=matrix::$matrix"
+          echo "-------------------"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
   tests:
     needs: create-strategy
     runs-on: ubuntu-latest
@@ -58,12 +61,16 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.create-strategy.outputs.matrix) }}
 
+    env:
+      DB: ${{ matrix.db-service }}
+      SEARCH: ${{ matrix.search-service }}
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python "${{ matrix.python-version }}"
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "${{ matrix.python-version }}"
 
@@ -73,7 +80,7 @@ jobs:
           requirements-builder -e "tests" --level=${{ matrix.requirements-level }} setup.py > .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
           cat .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('.${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt') }}
