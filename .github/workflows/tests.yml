@@ -19,9 +19,6 @@ jobs:
             "db-service": "postgresql14",
             "DB_EXTRAS": "postgresql"
           }, {
-            "db-service": "mysql8",
-            "DB_EXTRAS": "mysql"
-          }, {
             "search-service": "opensearch2",
             "SEARCH_EXTRAS": "opensearch2"
           }]' | jq -c .)
@@ -34,7 +31,7 @@ jobs:
           DB=$(
             if grep -q "invenio-db" setup.cfg
             then
-              echo '"db-services": ["postgresql14", "mysql8"], '
+              echo '"db-services": ["postgresql14"], '
             else
               echo ''
             fi)
