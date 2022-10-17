@@ -16,7 +16,12 @@ jobs:
           pip install setuptools wheel babel
       - name: Build package
         run: |
-          python setup.py compile_catalog sdist bdist_wheel
+          python setup.py sdist bdist_wheel
+
+          if grep -q "compile_catalog" setup.cfg
+          then
+            python setup.py compile_catalog
+          fi
       - name: pypi-publish
         uses: pypa/gh-action-pypi-publish@v1.5.1
         with:
